@@ -40,7 +40,7 @@ export default function TicketForm({
   const [categoryError, setCategoryError] = useState(false)
   const [userError, setUserError] = useState(false)
 
-  function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+  function handleSubmit(event: React.SubmitEvent<HTMLFormElement>) {
     const formData = new FormData(event.currentTarget)
 
     const title = formData.get("title")?.toString().trim() ?? ""

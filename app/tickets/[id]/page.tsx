@@ -59,7 +59,7 @@ async function Ticket({ params }: Props) {
   const { id } = await params
 
   const ticket = await db.query.tickets.findFirst({
-    where: eq(tickets.id, id),
+    where: eq(tickets.id, Number(id)),
     with: {
       user: true,
       categories: true,
@@ -74,12 +74,6 @@ async function Ticket({ params }: Props) {
     where: eq(comments.ticketId, Number(id)),
     orderBy: (comments, { desc }) => [desc(comments.createdAt)],
   });
-
-  const statusColors = {
-    open: "bg-green-400",
-    "in-progress": "bg-amber-300",
-    resolved: "bg-gray-400",
-  }
 
   const statusItems = [
     {
@@ -96,11 +90,11 @@ async function Ticket({ params }: Props) {
     },
   ]
 
-  async function UpdateStatus(form: any) {
+  async function UpdateStatus(formData: FormData) {
     "use server"
     if (!ticket) { return }
 
-    const status = form.get("status")
+    const status = formData.get("status") as ("open" | "in-progress" | "resolved" | null)
     if (!status) { return }
 
     await db
@@ -112,11 +106,11 @@ async function Ticket({ params }: Props) {
     revalidatePath(`/tickets/${ticket.id}`);
   }
 
-  async function SendComment(form: FormData) {
+  async function SendComment(formData: FormData) {
     "use server"
     if (!ticket) { return }
 
-    const content = form.get("content")
+    const content = formData.get("content")
 
     if (typeof content !== "string" || !content.trim()) {
       return
