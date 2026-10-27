@@ -60,7 +60,7 @@ async function TicketsList() {
                 {ticket.status}
               </CardDescription>
               <CardDescription>
-                {ticket.createdAt.getDay()}-{ticket.createdAt.getMonth()}-{ticket.createdAt.getFullYear()}
+                {ticket.createdAt.toLocaleDateString()}
               </CardDescription>
             </CardContent>
           </Card>
