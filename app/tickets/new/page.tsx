@@ -3,11 +3,11 @@ import TicketForm from "@/components/ticketform";
 import { db } from "@/db"
 import { users, categories, tickets } from "@/db/schema";
 import { redirect } from "next/navigation";
-import SkeletonPage from "@/components/skeletonpage";
+import LoadingPage from "@/components/loading-page";
 
 export default async function NewTicket() {
   return (
-    <Suspense fallback={<SkeletonPage/>}>
+    <Suspense fallback={<LoadingPage/>}>
       <NewTicketForm />
     </Suspense>
   );

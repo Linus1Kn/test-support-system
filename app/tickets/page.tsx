@@ -2,11 +2,12 @@ import { Suspense } from "react";
 import { Card, CardTitle, CardHeader, CardDescription, CardContent, CardAction, CardFooter } from "@/components/ui/card";
 import { db } from "@/db";
 import { tickets } from "@/db/schema";
-import SkeletonPage from "@/components/skeletonpage";
+import StatusLabel from "@/components/status-label";
+import LoadingPage from "@/components/loading-page";
 
 export default function Tickets() {
   return (
-    <Suspense fallback={<SkeletonPage/>}>
+    <Suspense fallback={<LoadingPage/>}>
       <TicketsList />
     </Suspense>
   );
@@ -19,19 +20,13 @@ async function TicketsList() {
     }
   })
 
-  const statusColors = {
-    open: "bg-green-400",
-    "in-progress": "bg-amber-300",
-    resolved: "bg-gray-400",
-  }
-
   return (
     <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans">
       <div className="mb-4 flex flex-col items-center">
         <h1 className="text-3xl font-medium">Tickets</h1>
       </div>
 
-      <div className="gap-2 flex flex-col w-120">
+      <div className="gap-2 flex flex-col w-2xl">
         {allTickets.map((ticket) => (
           <Card key={ticket.id}>
             <CardHeader className="flex justify-between items-center">
@@ -56,9 +51,7 @@ async function TicketsList() {
             </CardContent>
 
             <CardContent className="flex justify-between">
-              <CardDescription className={`capitalize rounded-sm font-semibold px-2 text-white ${statusColors[ticket.status ?? "open"]}`}>
-                {ticket.status}
-              </CardDescription>
+              <StatusLabel status={ticket.status} />
               <CardDescription>
                 {ticket.createdAt.toLocaleDateString()}
               </CardDescription>

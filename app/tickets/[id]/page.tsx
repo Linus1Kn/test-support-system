@@ -24,13 +24,25 @@ import {
   FieldError,
   FieldDescription,
 } from "@/components/ui/field"
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog"
+import StatusLabel from "@/components/status-label";
+import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
 import { db } from "@/db"
 import { tickets, comments } from "@/db/schema"
 import { eq } from "drizzle-orm"
-import SkeletonPage from "@/components/skeletonpage";
-import { Button } from "@/components/ui/button";
 import { revalidatePath } from "next/cache";
-import { Textarea } from "@/components/ui/textarea";
+import LoadingPage from "@/components/loading-page";
 
 type Props = {
   params: Promise<{ id: string }>
@@ -38,7 +50,7 @@ type Props = {
 
 export default async function TicketPage({ params }: Props) {
   return (
-    <Suspense fallback={<SkeletonPage />}>
+    <Suspense fallback={<LoadingPage />}>
       <Ticket params={params} />
     </Suspense>
   );
@@ -84,7 +96,7 @@ async function Ticket({ params }: Props) {
     },
   ]
 
-  async function changeroo(form: any) {
+  async function UpdateStatus(form: any) {
     "use server"
     if (!ticket) { return }
 
@@ -100,7 +112,7 @@ async function Ticket({ params }: Props) {
     revalidatePath(`/tickets/${ticket.id}`);
   }
 
-  async function sendcomentt(form: FormData) {
+  async function SendComment(form: FormData) {
     "use server"
     if (!ticket) { return }
 
@@ -119,7 +131,7 @@ async function Ticket({ params }: Props) {
   }
 
   return (
-    <div className="container mx-auto max-w-2xl p-6">
+    <div className="container mx-auto max-w-2xl p-6 flex flex-col gap-2">
       <Card>
         <CardHeader className="flex justify-between items-center">
           <div className="flex gap-2 items-center">
@@ -143,36 +155,45 @@ async function Ticket({ params }: Props) {
         </CardContent>
 
         <CardContent>
-          <CardDescription>
+          <p>
             {ticket.description}
-          </CardDescription>
+          </p>
         </CardContent>
 
         <CardContent className="flex gap-2">
-          <CardDescription className={`capitalize rounded-sm font-semibold px-2 text-white ${statusColors[ticket.status ?? "open"]}`}>
-            {ticket.status}
-          </CardDescription>
+          <StatusLabel status={ticket.status} />
 
-          <form action={changeroo} className="flex gap-1">
-            <Select
-              name="status"
-            >
-              <SelectTrigger className="w-[180px]">
-                <SelectValue placeholder="Status" />
-              </SelectTrigger>
+          <AlertDialog>
+            <AlertDialogTrigger render={<Button variant="outline">Edit status</Button>} />
+            <AlertDialogContent>
+              <form action={UpdateStatus} className="flex flex-col gap-4">
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Update ticket status.</AlertDialogTitle>
+                  <Select
+                    name="status"
+                  >
+                    <SelectTrigger className="w-[180px]">
+                      <SelectValue placeholder="Status" />
+                    </SelectTrigger>
 
-              <SelectContent>
-                <SelectGroup>
-                  {statusItems.map((item) => (
-                    <SelectItem key={item.value} value={item.value}>
-                      {item.label}
-                    </SelectItem>
-                  ))}
-                </SelectGroup>
-              </SelectContent>
-            </Select>
-            <Button type="submit">Save</Button>
-          </form>
+                    <SelectContent>
+                      <SelectGroup>
+                        {statusItems.map((item) => (
+                          <SelectItem key={item.value} value={item.value}>
+                            {item.label}
+                          </SelectItem>
+                        ))}
+                      </SelectGroup>
+                    </SelectContent>
+                  </Select>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                  <AlertDialogAction type="submit">Save</AlertDialogAction>
+                </AlertDialogFooter>
+              </form>
+            </AlertDialogContent>
+          </AlertDialog>
 
         </CardContent>
       </Card>
@@ -184,7 +205,7 @@ async function Ticket({ params }: Props) {
       </CardHeader>
 
       <CardContent className="flex flex-col gap-1">
-        <form action={sendcomentt} className="flex gap-1">
+        <form action={SendComment} className="flex gap-1 mb-2">
           <FieldSet className="w-full">
             <FieldGroup className="flex-1">
               <Field>
@@ -214,9 +235,9 @@ async function Ticket({ params }: Props) {
             {ticketComments.map((comment) => (
               <Card key={comment.id}>
                 <CardContent>
-                  <CardDescription>
+                  <p>
                     {comment.content}
-                  </CardDescription>
+                  </p>
                   <CardDescription>
                     {comment.createdAt.toLocaleDateString()}
                   </CardDescription>

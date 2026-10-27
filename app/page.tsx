@@ -2,11 +2,11 @@ import { Suspense } from "react";
 import { Card, CardTitle, CardHeader, CardDescription, CardContent, CardAction, CardFooter } from "@/components/ui/card";
 import { db } from "@/db";
 import { users } from "@/db/schema";
-import SkeletonPage from "@/components/skeletonpage";
+import LoadingPage from "@/components/loading-page";
 
 export default async function Home() {
   return (
-    <Suspense fallback={<SkeletonPage/>}>
+    <Suspense fallback={<LoadingPage/>}>
       <UserList />
     </Suspense>
   );

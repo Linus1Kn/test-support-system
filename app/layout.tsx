@@ -25,9 +25,9 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     >
       <body className="min-h-full flex flex-col">
         <nav className="bg-card border flex gap-4 p-2">
-          <Link href="/">home</Link>
-          <Link href="/tickets">tickets</Link>
-          <Link href="/tickets/new">new ticket</Link>
+          <Link className="hover:underline" href="/">Home</Link>
+          <Link className="hover:underline" href="/tickets">Tickets</Link>
+          <Link className="hover:underline" href="/tickets/new">New Ticket</Link>
         </nav>
         {children}
       </body>

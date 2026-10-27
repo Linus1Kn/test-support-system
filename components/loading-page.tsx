@@ -1,5 +1,5 @@
 
-export default function SkeletonPage() {
+export default function LoadingPage() {
   return (
     <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans">
       <div className="w-5 h-5 animate-spin">
