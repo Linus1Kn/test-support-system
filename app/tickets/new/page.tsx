@@ -1,9 +1,18 @@
+import { Suspense } from "react";
 import TicketForm from "@/components/ticketform";
 import { db } from "@/db"
 import { users, categories, tickets } from "@/db/schema";
 import { redirect } from "next/navigation";
+import SkeletonPage from "@/components/skeletonpage";
 
 export default async function NewTicket() {
+  return (
+    <Suspense fallback={<SkeletonPage/>}>
+      <NewTicketForm />
+    </Suspense>
+  );
+}
+async function NewTicketForm() {
   const allUsers = await db.select().from(users);
   const allCategories = await db.select().from(categories);
 

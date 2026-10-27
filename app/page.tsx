@@ -1,9 +1,17 @@
-import { Button } from "@/components/ui/button";
+import { Suspense } from "react";
 import { Card, CardTitle, CardHeader, CardDescription, CardContent, CardAction, CardFooter } from "@/components/ui/card";
 import { db } from "@/db";
 import { users } from "@/db/schema";
+import SkeletonPage from "@/components/skeletonpage";
 
 export default async function Home() {
+  return (
+    <Suspense fallback={<SkeletonPage/>}>
+      <UserList />
+    </Suspense>
+  );
+}
+async function UserList() {
   const allUsers = await db.select().from(users);
 
   return (
@@ -13,7 +21,7 @@ export default async function Home() {
         <p>Internal system for opening & closing support tickets</p>
       </div>
 
-      <div className="gap-2 grid grid-cols-2">
+      <div className="gap-2 grid grid-cols-3">
         {allUsers.map((user) => (
           <Card key={user.id}>
             <CardContent>

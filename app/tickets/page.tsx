@@ -1,9 +1,17 @@
-import { Button } from "@/components/ui/button";
+import { Suspense } from "react";
 import { Card, CardTitle, CardHeader, CardDescription, CardContent, CardAction, CardFooter } from "@/components/ui/card";
 import { db } from "@/db";
 import { tickets } from "@/db/schema";
+import SkeletonPage from "@/components/skeletonpage";
 
-export default async function Tickets() {
+export default function Tickets() {
+  return (
+    <Suspense fallback={<SkeletonPage/>}>
+      <TicketsList />
+    </Suspense>
+  );
+}
+async function TicketsList() {
   const allTickets = await db.query.tickets.findMany({
     with: {
       user: true,
