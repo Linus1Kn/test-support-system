@@ -1,5 +1,6 @@
 import { Suspense } from "react";
 import TicketForm from "@/components/ticketform";
+import { connection } from "next/server";
 import { db } from "@/db"
 import { users, categories, tickets } from "@/db/schema";
 import { redirect } from "next/navigation";
@@ -13,6 +14,7 @@ export default async function NewTicket() {
   );
 }
 async function NewTicketForm() {
+  await connection();
   const allUsers = await db.select().from(users);
   const allCategories = await db.select().from(categories);
 

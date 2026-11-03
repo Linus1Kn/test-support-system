@@ -1,10 +1,11 @@
 import { Suspense } from "react";
-import { Card, CardTitle, CardHeader, CardDescription, CardContent, CardAction, CardFooter } from "@/components/ui/card";
+import { Card, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
+import { connection } from "next/server";
 import { db } from "@/db";
 import { users } from "@/db/schema";
 import LoadingPage from "@/components/loading-page";
 
-export default async function Home() {
+export default function Home() {
   return (
     <Suspense fallback={<LoadingPage/>}>
       <UserList />
@@ -12,6 +13,7 @@ export default async function Home() {
   );
 }
 async function UserList() {
+  await connection()
   const allUsers = await db.select().from(users);
 
   return (

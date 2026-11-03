@@ -1,5 +1,6 @@
 import { Suspense } from "react";
 import { Card, CardTitle, CardHeader, CardDescription, CardContent, CardAction, CardFooter } from "@/components/ui/card";
+import { connection } from "next/server";
 import { db } from "@/db";
 import { tickets } from "@/db/schema";
 import StatusLabel from "@/components/status-label";
@@ -13,6 +14,7 @@ export default function Tickets() {
   );
 }
 async function TicketsList() {
+  await connection();
   const allTickets = await db.query.tickets.findMany({
     with: {
       user: true,

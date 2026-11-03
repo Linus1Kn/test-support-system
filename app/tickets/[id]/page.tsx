@@ -38,6 +38,7 @@ import {
 import StatusLabel from "@/components/status-label";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
+import { connection } from "next/server";
 import { db } from "@/db"
 import { tickets, comments } from "@/db/schema"
 import { eq } from "drizzle-orm"
@@ -55,7 +56,9 @@ export default async function TicketPage({ params }: Props) {
     </Suspense>
   );
 }
+
 async function Ticket({ params }: Props) {
+  await connection();
   const { id } = await params
 
   const ticket = await db.query.tickets.findFirst({
@@ -67,7 +70,7 @@ async function Ticket({ params }: Props) {
   })
 
   if (!ticket) {
-    notFound()
+    notFound();
   }
 
   const ticketComments = await db.query.comments.findMany({
